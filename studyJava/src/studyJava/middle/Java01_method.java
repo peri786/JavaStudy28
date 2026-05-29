@@ -1,0 +1,10 @@
+package studyJava.middle;
+
+public class Java01_method {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
