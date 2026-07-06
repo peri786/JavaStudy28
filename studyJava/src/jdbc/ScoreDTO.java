@@ -9,6 +9,62 @@ public class ScoreDTO {
 	private int kor; // 국어
 	private int eng; // 영어
 	private int mat; // 수학
+	
+	private int tkor; // 국어 총점
+	private int teng; // 영어 총점
+	private int tmat; // 수학 총점
+	
+	private double akor;
+	private double aeng;
+	private double amat;
+
+	public double getAkor() {
+		return akor;
+	}
+
+	public void setAkor(double akor) {
+		this.akor = akor;
+	}
+
+	public double getAeng() {
+		return aeng;
+	}
+
+	public void setAeng(double aeng) {
+		this.aeng = aeng;
+	}
+
+	public double getAmat() {
+		return amat;
+	}
+
+	public void setAmat(double amat) {
+		this.amat = amat;
+	}
+
+	public int getTkor() {
+		return tkor;
+	}
+
+	public void setTkor(int tkor) {
+		this.tkor = tkor;
+	}
+
+	public int getTeng() {
+		return teng;
+	}
+
+	public void setTeng(int teng) {
+		this.teng = teng;
+	}
+
+	public int getTmat() {
+		return tmat;
+	}
+
+	public void setTmat(int tmat) {
+		this.tmat = tmat;
+	}
 
 	public int getIdx() {
 		return idx;
@@ -48,6 +104,11 @@ public class ScoreDTO {
 
 	public void setMat(int mat) {
 		this.mat = mat;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("학번 : %d, 이름 : %s, 국어 : %d, 영어 : %d, 수학 : %d", idx, name, kor, eng, mat);
 	}
 
 }

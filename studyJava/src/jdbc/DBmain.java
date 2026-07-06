@@ -1,5 +1,7 @@
 package jdbc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class DBmain {
@@ -12,7 +14,7 @@ public class DBmain {
 		ScoreDAO dao = new ScoreDAO();
 
 		while (flag) {
-			System.out.print("[1] 입력 [2] 학번 조건 출력 [0] 종료 : ");
+			System.out.print("[1] 입력 [2] 학번 조건 출력 [3] 모두 출력 [4] 서브쿼리 출력 [5] 수정 [0] 종료 : ");
 
 			int menu = sc.nextInt();
 			if (menu == 1) {
@@ -54,8 +56,52 @@ public class DBmain {
 
 			} else if (menu == 3) {
 				
-				dao.getScore();
+				System.out.println("전체 인원수 : " + dao.getCount());
+				System.out.println("=========================================");
+				List<ScoreDTO> list = dao.getScore();
+
+				for (ScoreDTO dto : list) {
+					int tot = dto.getKor() + dto.getEng() + dto.getMat();
+					double ave = (double)tot / 3;
+					String grade = "";
+					if(ave >= 90) {
+						grade = "A";
+					} else if (ave >= 80) {
+						grade = "B";
+					} else if (ave >= 70) {
+						grade = "C";
+					} else if (ave >= 60) {
+						grade = "D";
+					} else {
+						grade = "F";
+					}
+					System.out.print(dto);
+					System.out.println(", " + tot + ", " + ave + ", " + grade);
+				}
+				System.out.println("=========================================");
+				ScoreDTO dto = null;
+				dto = dao.setTotal();
+				System.out.println("전체 총점 : " + dto.getTkor() + ", " + dto.getTeng() + ", " + dto.getTmat());
+				System.out.println("=========================================");
+				dto = dao.setAvg();
+				System.out.println("전체 평균 : " + dto.getAkor() + ", " + dto.getAeng() + ", " + dto.getAmat());
 				
+			} else if (menu == 4) {
+				
+				List<ScoreDTO> list = dao.getMaxKor();
+				for(ScoreDTO dto : list) {
+					System.out.println(dto.getIdx() + ", " + dto.getName());
+				}
+
+			} else if (menu == 5) {
+				System.out.println("수정 항목 : ");
+				String upd = sc.next();
+				System.out.println("수정 내용 : ");
+				int updSet = sc.nextInt();
+				System.out.println("수정하고 싶은 id : ");
+				int idxSet = sc.nextInt();
+				dao.getUpdate(upd, updSet, idxSet);
+
 			} else if (menu == 0) {
 				flag = false;
 				System.out.println("종료");

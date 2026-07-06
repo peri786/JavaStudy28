@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ScoreDAO {
 	
@@ -32,6 +35,7 @@ public class ScoreDAO {
 		}
 	}
 	
+	// 학번 자동 추가
 	public int countIdx() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -58,10 +62,100 @@ public class ScoreDAO {
 		return 0;
 	}
 	
-	
-	// 출력
-	public void getScore() {
+	// 전체 인원수
+	public int getCount() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
+		String sql = "select count(*) as cnt from score";
+		
+		int cnt = 0;
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return cnt;
+	}
+	
+	
+	// 가변 배열을 이용한 모든 레코드 출력(내림차순)
+	public List<ScoreDTO> getScore() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<ScoreDTO> list = new ArrayList<ScoreDTO>();
+		// 검색된 결과가 여러개 일때 ScoreDTO 객체를 담을 수 있는 가변배열 생성
+		
+		String sql = "select * from score order by name desc";
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ScoreDTO dto = new ScoreDTO();
+				dto.setIdx(rs.getInt("idx"));
+				dto.setName(rs.getString("name"));
+				dto.setKor(rs.getInt("kor"));
+				dto.setEng(rs.getInt("eng"));
+				dto.setMat(rs.getInt("mat"));
+				
+				list.add(dto);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+		
+	}
+	
+	// 국어점수가 가장 높은 사람의 학번, 이름 출력
+	public List<ScoreDTO> getMaxKor() {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select idx, name from score " 
+				+ "where kor=(select max(kor) from score)";
+		// 여러줄로 코딩할 때는 반드시 사이 띄우기 할것!
+		// subquery : select 안에 select문을 만드는 것!
+		
+		List<ScoreDTO> list = new ArrayList<ScoreDTO>();
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ScoreDTO dto = new ScoreDTO();
+				
+				dto.setIdx(rs.getInt("idx"));
+				dto.setName(rs.getString("name"));
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 	
 	// 조건 검색
@@ -129,12 +223,83 @@ public class ScoreDAO {
 //		return dto;
 //	}
 	
+	// 과목별 총점 계산 메서드
+	public ScoreDTO setTotal() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select sum(kor) as tkor, sum(eng) as teng, sum(mat) as tmat from score";
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				ScoreDTO dto = new ScoreDTO();
+				
+				dto.setTkor(rs.getInt("tkor"));
+				dto.setTeng(rs.getInt("teng"));
+				dto.setTmat(rs.getInt("tmat"));
+				return dto;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	// 과목별 평균 구하는 메서드
+	
+	public ScoreDTO setAvg() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select avg(kor) as akor, avg(eng) as aeng, avg(mat) as amat from score";
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ScoreDTO dto = new ScoreDTO();
+				dto.setAkor(rs.getDouble("akor"));
+				dto.setAeng(rs.getDouble("aeng"));
+				dto.setAmat(rs.getDouble("amat"));
+				
+				return dto;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
 	
 	// 수정
-	public void getUpdate() {
+	public void getUpdate(String upd, int updSet, int idxSet) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		
+		String sql = "update score set " + upd + "=? where idx=?";
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, updSet);
+			pstmt.setInt(2, idxSet);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// 삭제
