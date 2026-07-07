@@ -124,6 +124,57 @@ public class ScoreDAO {
 		
 	}
 	
+	// 오라클을 이용한 총점 ,평균, 학점 출력
+	public List<ScoreDTO> getOracle() {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		List<ScoreDTO> list = new ArrayList<ScoreDTO>();
+		// sql을 실행한 결과가 여러개 이면 무조건 DTO객체를 저장하는 가변배열을 생성한다
+		
+		String sql = " select idx, name, kor, eng, mat,\r\n"
+				+ "   kor + eng + mat as tot,\r\n"
+				+ "   (kor + eng + mat) / 3 as ave,\r\n"
+				+ "   case\r\n"
+				+ "     when (kor + eng + mat) / 3. >= 90 then 'A'\r\n"
+				+ "     when (kor + eng + mat) / 3. >= 80 then 'B'\r\n"
+				+ "     when (kor + eng + mat) / 3. >= 70 then 'C'\r\n"
+				+ "     when (kor + eng + mat) / 3. >= 60 then 'D'\r\n"
+				+ "     else 'F'\r\n"
+				+ "   end as grade from score";
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				ScoreDTO dto = new ScoreDTO();
+				
+				dto.setIdx(rs.getInt("idx"));
+				dto.setName(rs.getString("name"));
+				dto.setKor(rs.getInt("kor"));
+				dto.setEng(rs.getInt("eng"));
+				dto.setMat(rs.getInt("mat"));
+				dto.setTot(rs.getInt("tot"));
+				dto.setAve(rs.getDouble("ave"));
+				dto.setGrade(rs.getString("grade"));
+				
+				list.add(dto);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	
 	// 국어점수가 가장 높은 사람의 학번, 이름 출력
 	public List<ScoreDTO> getMaxKor() {
 		
@@ -285,16 +336,19 @@ public class ScoreDAO {
 	
 	
 	// 수정
-	public void getUpdate(String upd, int updSet, int idxSet) {
+	public void getUpdate(ScoreDTO dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
-		String sql = "update score set " + upd + "=? where idx=?";
+		String sql = "update score set kor=?, eng=?, mat=? where idx=?";
 		try {
 			conn = DBmanager.getInstance();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, updSet);
-			pstmt.setInt(2, idxSet);
+			pstmt.setInt(1, dto.getKor());
+			// kor 변수에 저장된 값을 읽어와서 1번째 ?에 정수 타입으로 저장
+			pstmt.setInt(2, dto.getEng());
+			pstmt.setInt(3, dto.getMat());
+			pstmt.setInt(4, dto.getIdx());
 			pstmt.executeUpdate();
 			
 		} catch (Exception e) {
@@ -303,9 +357,21 @@ public class ScoreDAO {
 	}
 	
 	// 삭제
-	public void getDelete() {
+	public void getDelete(int idx) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		
+		String sql = "delete from score where idx=?";
+		
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, idx);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

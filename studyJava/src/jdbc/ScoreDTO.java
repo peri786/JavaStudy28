@@ -10,6 +10,10 @@ public class ScoreDTO {
 	private int eng; // 영어
 	private int mat; // 수학
 	
+	private int tot;
+	private double ave;
+	private String grade;
+	
 	private int tkor; // 국어 총점
 	private int teng; // 영어 총점
 	private int tmat; // 수학 총점
@@ -17,7 +21,31 @@ public class ScoreDTO {
 	private double akor;
 	private double aeng;
 	private double amat;
+	
+	public int getTot() {
+		return tot;
+	}
 
+	public void setTot(int tot) {
+		this.tot = tot;
+	}
+
+	public double getAve() {
+		return ave;
+	}
+
+	public void setAve(double ave) {
+		this.ave = ave;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+	
 	public double getAkor() {
 		return akor;
 	}
