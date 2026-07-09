@@ -13,12 +13,12 @@ public class ArtistMain {
 
 		while (flag) {
 
-			System.out.println("[1] 등록 [2] 출력 [3] id로 검색 [0] 종료");
+			System.out.println("[1] 등록 [2] 출력 [3] id로 검색 [4] 삭제 [5] 조인 출력 [0] 종료");
 			int menu = sc.nextInt();
 
 			if (menu == 1) {
-				ArtistDTO dto = dao.viewInsert();
-				dao.insert(dto);
+
+				dao.insert(dao.viewInsert());
 
 			} else if (menu == 2) {
 
@@ -26,6 +26,16 @@ public class ArtistMain {
 
 			} else if (menu == 3) {
 
+				dao.viewFindById();
+
+			} else if (menu == 4) {
+
+				dao.viewDelete();
+
+			} else if (menu == 5) {
+				
+				dao.viewPrintJoinArtist(dao.printJoinArtist());
+				
 			} else if (menu == 0) {
 				flag = false;
 			} else {

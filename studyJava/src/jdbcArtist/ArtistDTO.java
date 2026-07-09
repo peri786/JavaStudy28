@@ -8,7 +8,44 @@ public class ArtistDTO {
 	private String artist_gender;
 	private String talent;
 	private String agency;
-	
+
+	private int serial_no;
+	private int point;
+	private String grade;
+	private String mento_name;
+
+	public int getSerial_no() {
+		return serial_no;
+	}
+
+	public void setSerial_no(int serial_no) {
+		this.serial_no = serial_no;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+	public void setPoint(int point) {
+		this.point = point;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getMento_name() {
+		return mento_name;
+	}
+
+	public void setMento_name(String mento_name) {
+		this.mento_name = mento_name;
+	}
+
 	private String year;
 	private String month;
 	private String date;
@@ -60,13 +97,14 @@ public class ArtistDTO {
 	public void setAgency(String agency) {
 		this.agency = agency;
 	}
-	
+
 	@Override
 	public String toString() {
 		year = artist_birth.substring(0, 4);
 		month = artist_birth.substring(4, 6);
 		date = artist_birth.substring(6, 8);
-		return String.format("참가번호 : %s, 참가자명 : %s, 생년월일 : %s월 %s월 %s일 , 성별 : %s, 특기 : %s, 소속사 : %s", artist_id, artist_name, year, month, date, artist_gender, talent, agency);
+		return String.format("%-5s %7s %8s월 %s월 %s일 %7s %7s %10s", artist_id, artist_name, year, month, date,
+				artist_gender, talent, agency);
 	}
 
 }
