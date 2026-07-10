@@ -250,8 +250,6 @@ public class ArtistDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		List<ArtistDTO> list = new ArrayList<ArtistDTO>();
 
 		String sql = """
 								select c.serial_no, a.artist_id, a.artist_name, a.artist_birth, c.point,
@@ -267,6 +265,9 @@ public class ArtistDAO {
 				order by c.serial_no
 								""";
 		
+		List<ArtistDTO> list = new ArrayList<ArtistDTO>();
+		// ArtistDTO 객체를 저장할 수 있는 가변배열 생성
+
 		try {
 			conn = DBmanager.getInstance();
 			pstmt = conn.prepareStatement(sql);

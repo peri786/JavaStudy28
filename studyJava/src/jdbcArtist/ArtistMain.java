@@ -13,7 +13,7 @@ public class ArtistMain {
 
 		while (flag) {
 
-			System.out.println("[1] 등록 [2] 출력 [3] id로 검색 [4] 삭제 [5] 조인 출력 [0] 종료");
+			System.out.println("[1] 등록 [2] 참가자 목록 출력 [3] id로 검색 [4] 삭제 [5] 멘토 점수 목록 출력 [0] 종료");
 			int menu = sc.nextInt();
 
 			if (menu == 1) {
