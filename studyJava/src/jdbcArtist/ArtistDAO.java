@@ -236,16 +236,15 @@ public class ArtistDAO {
 
 	// 조인 조건절
 	public void viewPrintJoinArtist(List<ArtistDTO> list) {
-		
-		for(ArtistDTO dto : list) {
-			System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\t%s", 
-					dto.getSerial_no(), dto.getArtist_id(), dto.getArtist_name(), 
-					dto.getArtist_birth(), dto.getPoint(), dto.getGrade(), dto.getMento_name());
+
+		for (ArtistDTO dto : list) {
+			System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\t%s", dto.getSerial_no(), dto.getArtist_id(),
+					dto.getArtist_name(), dto.getArtist_birth(), dto.getPoint(), dto.getGrade(), dto.getMento_name());
 			System.out.println();
 		}
-		
+
 	}
-	
+
 	public List<ArtistDTO> printJoinArtist() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -264,7 +263,7 @@ public class ArtistDAO {
 				where a.artist_id = c.artist_id and b.mento_id = c.mento_id
 				order by c.serial_no
 								""";
-		
+
 		List<ArtistDTO> list = new ArrayList<ArtistDTO>();
 		// ArtistDTO 객체를 저장할 수 있는 가변배열 생성
 
@@ -272,8 +271,8 @@ public class ArtistDAO {
 			conn = DBmanager.getInstance();
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				ArtistDTO dto = new ArtistDTO();
 				dto.setSerial_no(rs.getInt("serial_no"));
 				dto.setArtist_id(rs.getString("artist_id"));
@@ -282,17 +281,72 @@ public class ArtistDAO {
 				dto.setPoint(rs.getInt("point"));
 				dto.setGrade(rs.getString("grade"));
 				dto.setMento_name(rs.getString("mento_name"));
-				
+
 				list.add(dto);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			DBmanager.close(rs, pstmt, conn);
 		}
-		
+
 		return list;
 	}
 
+	// 그룹
+	public void viewPrintGroupArtist(List<ArtistDTO> list) {
+
+		for (ArtistDTO dto : list) {
+//			rank += 1; // 정렬이 되어있는 데이터를 출력하므로
+			System.out.printf("%s\t%s\t%s\t%d\t%.2f\t%d", dto.getArtist_id(), dto.getArtist_name(),
+					dto.getArtist_gender(), dto.getTpoint(), dto.getApoint(), dto.getRank());
+			System.out.println();
+		}
+
+	}
+
+	public List<ArtistDTO> printGroupArtist() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String sql = """
+				select a.artist_id, a.artist_name, a.artist_gender,
+				    sum(b.point) as tpoint,
+				    avg(b.point) as apoint,
+				    rank() over(order by sum(b.point) desc) as rank
+				from tbl_artist a, tbl_point b
+				where a.artist_id = b.artist_id
+				group by a.artist_id, a.artist_name, a.artist_gender
+				order by tpoint desc
+												""";
+		List<ArtistDTO> list = new ArrayList<ArtistDTO>();
+		// ArtistDTO 객체를 저장할 수 있는 가변배열 생성
+
+		try {
+			conn = DBmanager.getInstance();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				ArtistDTO dto = new ArtistDTO();
+				dto.setArtist_id(rs.getString("artist_id"));
+				dto.setArtist_name(rs.getString("artist_name"));
+				dto.setArtist_gender(rs.getString("artist_gender"));
+				dto.setTpoint(rs.getInt("tpoint"));
+				dto.setApoint(rs.getDouble("apoint"));
+				dto.setRank(rs.getInt("rank"));
+
+				list.add(dto);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBmanager.close(rs, pstmt, conn);
+		}
+
+		return list;
+	}
 }

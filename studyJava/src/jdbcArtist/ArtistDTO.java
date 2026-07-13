@@ -14,6 +14,38 @@ public class ArtistDTO {
 	private String grade;
 	private String mento_name;
 
+	private String year;
+	private String month;
+	private String date;
+
+	private int tpoint;
+	private double apoint;
+	private int rank;
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	public int getTpoint() {
+		return tpoint;
+	}
+
+	public void setTpoint(int tpoint) {
+		this.tpoint = tpoint;
+	}
+
+	public double getApoint() {
+		return apoint;
+	}
+
+	public void setApoint(double apoint) {
+		this.apoint = apoint;
+	}
+
 	public int getSerial_no() {
 		return serial_no;
 	}
@@ -45,10 +77,6 @@ public class ArtistDTO {
 	public void setMento_name(String mento_name) {
 		this.mento_name = mento_name;
 	}
-
-	private String year;
-	private String month;
-	private String date;
 
 	public String getArtist_id() {
 		return artist_id;
