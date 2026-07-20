@@ -43,9 +43,9 @@ public class MainFrame extends JFrame {
 		setSize(700, 500); // 가로, 세로 크기
 		setLocationRelativeTo(null); // 화면 가운데
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		createPanel();
-		createComponent();
-		addComponent();
+		createPanel(); // 패널생성 - 영역 나누기
+		createComponent(); // 배치할 물건 객체 생성
+		addComponent(); // 물건 배치 - 텍스트박스, 버튼 등
 		event();
 		setVisible(true); // 창 보이게 하기
 	
