@@ -40,7 +40,7 @@ public class ScoreDAO {
 	}
 
 	// 저장
-	public void setInsert(ScoreDTO dto) {
+	public boolean setInsert(ScoreDTO dto) {
 		Connection conn = null; // db 접속 정보 저장 객체
 		PreparedStatement pstmt = null; // sql
 
@@ -54,7 +54,10 @@ public class ScoreDAO {
 			pstmt.setInt(3, dto.getKor());
 			pstmt.setInt(4, dto.getEng());
 			pstmt.setInt(5, dto.getMat());
-			pstmt.executeUpdate(); // sql 실행
+			int result = pstmt.executeUpdate(); // sql 실행
+			if(result > 0) {
+				return true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("이미 존재하는 학번입니다");
@@ -71,6 +74,8 @@ public class ScoreDAO {
 				e.printStackTrace();
 			}
 		}
+		
+		return false;
 	}
 
 	// 학번 자동 추가
@@ -478,7 +483,7 @@ public class ScoreDAO {
 	}
 
 	// 수정
-	public void getUpdate(ScoreDTO dto) {
+	public boolean getUpdate(ScoreDTO dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -491,11 +496,16 @@ public class ScoreDAO {
 			pstmt.setInt(2, dto.getEng());
 			pstmt.setInt(3, dto.getMat());
 			pstmt.setInt(4, dto.getIdx());
-			pstmt.executeUpdate();
+			int row = pstmt.executeUpdate();
+			if(row > 0) {
+				return true;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
 
 	public void deleteMain() {
